@@ -1,0 +1,9 @@
+.backgroundImage {
+  position: absolute;
+  inset: 0;
+  background-image: url('/images/lab-scientist-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.2;
+}

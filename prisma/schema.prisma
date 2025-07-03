@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  RESEARCHER
+  PHARMACIST
+  PATIENT
+}
+
+enum Status {
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  userType    UserType
+  status      Status   @default(PENDING_APPROVAL)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  researcher  Researcher?
+  pharmacist  Pharmacist?
+  patient     Patient?
+}
+
+model Researcher {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id])
+  fullName           String
+  phone              String?
+  institution        String
+  department        String?
+  researchFocus      String
+  yearsOfExperience  String
+  orcidId           String?
+  areasOfInterest   String[]
+  description       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Pharmacist {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+  fullName        String
+  phone           String
+  licenseNumber   String   @unique
+  pharmacyName    String
+  yearsOfExperience Int
+  specialization  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Patient {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+  fullName        String
+  dateOfBirth     DateTime
+  phone           String
+  address         String
+  medicalHistory  String?
+  allergies       String[]
+  bloodType       String?
+  emergencyContact String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Add other models as needed for your application
+// For example:
+// model Dataset {
+//   id          String   @id @default(cuid())
+//   title       String
+//   description String
+//   // ... other fields
+// }
